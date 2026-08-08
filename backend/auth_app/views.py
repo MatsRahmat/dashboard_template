@@ -6,7 +6,11 @@ from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from rest_framework.parsers import JSONParser
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly,AllowAny
+from rest_framework.permissions import (
+     IsAuthenticated
+     ,IsAuthenticatedOrReadOnly
+     ,AllowAny
+)
 from rest_framework import status
 from rest_framework.views import (
     APIView,
@@ -18,6 +22,9 @@ from .serializers import (
 )
 
 # Create your views here
+# ======================================================
+#                         [ Login ]
+# ======================================================
 class AuthView(APIView):
     allowed_methods = ['post']
     def post(self, request, *args, **kwargs):
@@ -42,7 +49,9 @@ class AuthView(APIView):
             },status=status.HTTP_200_OK)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
     
-
+# ======================================================
+#                        [ Register ]
+# ======================================================
 class RegisterView(APIView):
     allowed_methods = ['post']
     def post(self, request, *args, **kwargs):
@@ -55,7 +64,35 @@ class RegisterView(APIView):
                 }, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             
+# ======================================================
+#                      [ Username Check ]
+# ======================================================
+class UsernameCheckView(APIView):
+    allowed_methods = ["get"]
+    
+    def get(self, request):
+        username = request.query_params.get("username")
+        if not username:
+            return Response({"errors":{"username": ["username field is required"]}}, status=status.HTTP_400_BAD_REQUEST)    
         
+        exists = User.objects.filter(username=username).exists()
+        resp_mesg = {}
+        if exists:
+            resp_mesg = {
+                "available": False,
+                "message": "Username is already taken"
+            }
+        else:
+             resp_mesg = {
+            "available": True,
+            "message": "Username is available"
+        }      
+        return Response(resp_mesg, status=status.HTTP_200_OK)
+        
+        
+# ======================================================
+#                        [ User Info ]
+# ======================================================
 class UserInfoView(APIView):
     allowed_methods = ["get"]
     permission_classes = [IsAuthenticated]
@@ -70,6 +107,9 @@ class UserInfoView(APIView):
             "is_staff": user.is_staff,
             }, status=status.HTTP_200_OK)
 
+# ======================================================
+#                        [ Get Access ]
+# ======================================================
 class RefreshTokenView(APIView):
     allowed_methods = ["post"]
     
