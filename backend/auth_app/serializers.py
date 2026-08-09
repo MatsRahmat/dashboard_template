@@ -13,12 +13,10 @@ class AuthSerializer(serializers.Serializer):
     
     def validate(self, data):
         if not data.get('username') or not data.get('password'):
-            raise serializers.ValidationError('Username and password is required!')
+            raise serializers.ValidationError('Username and password is required')
         user = authenticate(username=data["username"], password=data["password"])
         if not user:
-            raise serializers.ValidationError("Invalid credential or inactive user!")
-        if not user.is_active:
-            raise serializers.ValidationError('User inactive!')
+            raise serializers.ValidationError("Invalid credential or user inactive")
         return user
     
 # ======================================================

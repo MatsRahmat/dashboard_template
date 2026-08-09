@@ -49,7 +49,7 @@ class AuthView(APIView):
                     }
             },status=status.HTTP_200_OK)
         return Response({
-            "detail": serializer.errors,
+            "details": serializer.errors,
             },status=status.HTTP_400_BAD_REQUEST)
     
 # ======================================================
@@ -67,7 +67,7 @@ class RegisterView(APIView):
                 }, status=status.HTTP_201_CREATED)
         
         return Response({
-            "detail": serializer.errors,
+            "details": serializer.errors,
             }, status=status.HTTP_400_BAD_REQUEST)
             
 # ======================================================
@@ -79,7 +79,7 @@ class UsernameCheckView(APIView):
     def get(self, request):
         username = request.query_params.get("username")
         if not username:
-            return Response({"errors":{"username": ["username field is required"]}}, status=status.HTTP_400_BAD_REQUEST)    
+            return Response({"details":{"username": ["Username field is required"]}}, status=status.HTTP_400_BAD_REQUEST)    
         
         exists = User.objects.filter(username=username).exists()
         resp_mesg = {}
@@ -147,10 +147,10 @@ class ChangePasswordView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = ChangePasswordSerializer(instance=self.request.user, data=request.data)
         if serializer.is_valid():
-            user = serializer.update()
+            validated_data = serializer.validated_data
+            user = serializer.update(self.request.user, validated_data)
             return Response({
                 "status":True,
-                "user": user
-            }, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_200_OK)
+            }, status=status.HTTP_200_OK, content_type="application/json")
+        return Response({"details": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
     
