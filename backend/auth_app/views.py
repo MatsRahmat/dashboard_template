@@ -16,9 +16,10 @@ from rest_framework.views import (
     APIView,
 )
 
-from .serializers import (
+from auth_app.serializers import (
     AuthSerializer,
-    RegisterSerializer
+    RegisterSerializer,
+    ChangePasswordSerializer,
 )
 
 # Create your views here
@@ -47,7 +48,9 @@ class AuthView(APIView):
                     "last_login": user.last_login,
                     }
             },status=status.HTTP_200_OK)
-        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+        return Response({
+            "detail": serializer.errors,
+            },status=status.HTTP_400_BAD_REQUEST)
     
 # ======================================================
 #                        [ Register ]
@@ -62,7 +65,10 @@ class RegisterView(APIView):
                 "id": user.id,
                 "username":user.username
                 }, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        return Response({
+            "detail": serializer.errors,
+            }, status=status.HTTP_400_BAD_REQUEST)
             
 # ======================================================
 #                      [ Username Check ]
@@ -80,16 +86,17 @@ class UsernameCheckView(APIView):
         if exists:
             resp_mesg = {
                 "available": False,
-                "message": "Username is already taken"
+                "message": "Username is already taken",
+                "detail": "Username is already taken",
             }
         else:
              resp_mesg = {
             "available": True,
-            "message": "Username is available"
+            "message": "Username is available",
+            "detail": "Username is available",
         }      
         return Response(resp_mesg, status=status.HTTP_200_OK)
-        
-        
+                
 # ======================================================
 #                        [ User Info ]
 # ======================================================
@@ -129,3 +136,21 @@ class RefreshTokenView(APIView):
             return Response({
                 "errors": {"refresh": ["Invalid or expire refresh token"]}
             }, status=status.HTTP_400_BAD_REQUEST)
+                      
+# ======================================================
+#                        [ Change Password ]
+# ======================================================
+class ChangePasswordView(APIView):
+    allowed_methods = ["post"]
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request, *args, **kwargs):
+        serializer = ChangePasswordSerializer(instance=self.request.user, data=request.data)
+        if serializer.is_valid():
+            user = serializer.update()
+            return Response({
+                "status":True,
+                "user": user
+            }, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_200_OK)
+    

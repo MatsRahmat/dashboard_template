@@ -1,11 +1,11 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password, verify_password
 
 
 # ======================================================
-#                      Auth Serializer
+#                      Login
 # ======================================================
 class AuthSerializer(serializers.Serializer):
     username = serializers.CharField()
@@ -21,7 +21,9 @@ class AuthSerializer(serializers.Serializer):
             raise serializers.ValidationError('User inactive!')
         return user
     
-
+# ======================================================
+#                      Register 
+# ======================================================
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
     password_confirm = serializers.CharField(write_only=True)
@@ -42,3 +44,28 @@ class RegisterSerializer(serializers.ModelSerializer):
             password=validated_data["password"]
         )
         return user
+    
+# ======================================================
+#                      Change Password
+# ======================================================
+class ChangePasswordSerializer(serializers.ModelSerializer):
+    old_password = serializers.CharField(write_only=True)
+    new_password = serializers.CharField(write_only=True)
+    confirm_password = serializers.CharField(write_only=True)
+    
+    class Meta:
+        model = User
+        fields = ['old_password','new_password','confirm_password']
+        
+    def validate(self, data):
+        user = self.instance # auth user
+        if not user.check_password(data['old_password']):
+            raise serializers.ValidationError("Old password does not match")
+        if data['new_password'] != data['confirm_password']:
+            raise serializers.ValidationError("New password and confirm passsword does not match")
+        return data
+    
+    def update(self, instance, validated_data):
+        instance.set_password(validated_data['new_password'])
+        instance.save()
+        return instance
