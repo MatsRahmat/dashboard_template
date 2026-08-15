@@ -9,10 +9,11 @@ interface PersistConfig {
 export const createPersistMiddleware = (config: PersistConfig): Middleware => {
     return (storedApi) => (next) => (action) => {
         const result = next(action);
-
+        
         config.keys.forEach((key) => {
             const state = storedApi.getState();
             if (state[key] != undefined) {
+                console.log({state, key})
                 LocalStorageService.setItem(key, state[key]);
             }
         });
