@@ -1,10 +1,10 @@
 import * as React from "react"
-import { createBrowserRouter, Outlet } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 import LoginPage from "./pages/auth/login";
 import RegisterPage from "./pages/auth/register";
-import AppLayout from "./layouts/AppLayout";
-import PublicLayout from "./layouts/PublicLayout";
-import ProtectedLayout from "./layouts/ProtectedLayout";
+import AppLayout from "./components/layouts/AppLayout";
+import PublicLayout from "./components/layouts/PublicLayout";
+import ProtectedLayout from "./components/layouts/ProtectedLayout";
 import Dashboard from "./pages/dasboard";
 import LogoutPage from "./pages/auth/logout";
 

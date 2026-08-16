@@ -1,6 +1,6 @@
 import * as React from "react"
 
-import { loading_icon } from "../assets/icons"
+import { loading_icon } from "../../assets/icons"
 import ScreenOverlay from "./ScreenOverlay"
 
 export default function LoadingComponent() {

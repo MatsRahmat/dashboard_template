@@ -1,8 +1,8 @@
 import * as React from "react"
 import { useSelector } from "react-redux"
-import ViteSvg from "../assets/vite.svg"
-import { ButtonAnchor } from "../components/element"
-import type { RootState } from "../store"
+import ViteSvg from "../../assets/vite.svg"
+import { ButtonAnchor } from "./element"
+import type { RootState } from "../../store"
 
 export default function Navbar() {
     const { is_login } = useSelector((state: RootState) => state.auth);
@@ -34,7 +34,7 @@ export default function Navbar() {
     return (
         // Navbar ketika belum login
         <React.Fragment>
-            <nav className="w-full flex justify-between bg-cyan-500 py-2 not-dark:text-black px-4">
+            <nav className="w-full h-full flex justify-between bg-cyan-500 py-2 px-5 not-dark:text-black">
                 <div className="flex gap-2 items-center">
                     <img src={ViteSvg} alt="Logo" className="size-10 aspect-square" />
                     <p>Brand anda</p>

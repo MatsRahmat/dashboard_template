@@ -1,6 +1,6 @@
 import * as React from "react"
 import { Outlet, Navigate } from "react-router-dom"
-import { PublicRoute } from "../components/guard"
+import { PublicRoute } from "../ui/guard"
 
 export default function PublicLayout() {
     return (

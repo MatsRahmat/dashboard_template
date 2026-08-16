@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Navigate, Outlet } from "react-router-dom";
-import { ProtectedRoute } from "../components/guard";
+import { ProtectedRoute } from "../ui/guard";
 
 export default function ProtectedLayout() {
     return (
