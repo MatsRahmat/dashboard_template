@@ -35,9 +35,9 @@ export default function Navbar() {
                     <p>Brand anda</p>
                 </div>
                 <div className="flex items-center gap-2">
-                    <ButtonAnchor link="/login" title="Sign in" />
+                    <ButtonAnchor link="/auth/login" title="Sign in" />
                     <span>|</span>
-                    <ButtonAnchor link="/register" title="Sign up" />
+                    <ButtonAnchor link="/auth/register" title="Sign up" />
                 </div>
             </nav>
         </Fragment>

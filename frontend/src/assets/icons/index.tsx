@@ -1,0 +1,1 @@
+export {default as loading_icon } from "./loading_icon.svg"

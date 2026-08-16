@@ -1,73 +1,109 @@
 import * as React from "react"
-import type { JSX } from "react";
-import { Navigate } from "react-router-dom";
-import { createBrowserRouter } from "react-router-dom";
-import App from "./App";
-import { useSelector } from "react-redux"
-import type { RootState } from "./store";
+import { createBrowserRouter, Outlet } from "react-router-dom";
 import LoginPage from "./pages/auth/login";
+import RegisterPage from "./pages/auth/register";
+import AppLayout from "./layouts/AppLayout";
+import PublicLayout from "./layouts/PublicLayout";
+import ProtectedLayout from "./layouts/ProtectedLayout";
+import Dashboard from "./pages/dasboard";
 
-function logGlobalState(globalState: RootState): void {
-    const node_env = import.meta.env.VITE_NODE_ENV ?? ""
-    if (node_env == "development") {
-        console.log(globalState);
-    }
-}
-
-function getAccessToken(globalState: RootState): string | null {
-    const { auth } = globalState
-    let accessToken = null
-    if (auth.hasOwnProperty("accessToken")) {
-        accessToken = auth.accessToken;
-    }
-    return accessToken
-}
-
-function ProtectedRoute({ children }: { children: JSX.Element }) {
-    const globalState = useSelector((state: RootState) => state);
-    logGlobalState(globalState)
-    if (!getAccessToken(globalState)) {
-        return <Navigate to={"/login"} replace />
-    }
-    return children;
-}
-
-function PublicRoute({ children }: { children: JSX.Element }) {
-    const globalState = useSelector((state: RootState) => state);
-    logGlobalState(globalState);
-    if (getAccessToken(globalState)) {
-        return <Navigate to={"/dashboard"} replace />
-    }
-    return children;
-}
 
 const router = createBrowserRouter([
     {
         path: "/",
-        element: (
-            <ProtectedRoute>
-                <App />
-            </ProtectedRoute>
-        ),
+        element: <AppLayout />,
         children: [
+            // {
+            //     path: "/",
+            //     element: <div>lading page</div>,
+            // },
             {
-                path: "/dashboard",
-                element: <div>dasboard</div>
+                path: "/",
+                element: <ProtectedLayout />,
+                children: [
+                    {
+                        path: "/dashboard",
+                        element: <Dashboard />
+                    }
+                ]
+            },
+            {
+                path: "/auth",
+                element: <PublicLayout />,
+                children: [
+                    {
+                        path: "/auth/login",
+                        element: <LoginPage />
+                    },
+                    {
+                        path: "/auth/register",
+                        element: <RegisterPage />
+                    }
+                ]
+            },
+            {
+                path: "*",
+                element: <div>Not found</div>
             }
         ]
     },
-    {
-        path: "/login",
-        element: (
-            <PublicRoute>
-                <LoginPage />
-            </PublicRoute>
-        )
-    },
-    {
-        path: "*",
-        element: <div>Not Found</div>
-    }
+    // {
+    //     path: "/login",
+    //     element: (
+    //         <PublicRoute>
+    //             <LoginPage />
+    //         </PublicRoute>
+    //     )
+    // },
+    // {
+    //     path: "/register",
+    //     element: (
+    //         <PublicRoute>
+    //             <RegisterPage />
+    //         </PublicRoute>
+    //     )
+    // },
+    // {
+    //     path: "*",
+    //     element: <div>Not Found</div>
+    // }
 ]);
+
+// const router = createBrowserRouter([
+//     {
+//         path: "/",
+//         element: (
+//             <ProtectedRoute>
+//                 <App />
+//             </ProtectedRoute>
+//         ),
+//         children: [
+//             {
+//                 path: "/dashboard",
+//                 element: <div>dasboard</div>
+//             }
+//         ]
+//     },
+//     {
+//         path: "/login",
+//         element: (
+//             <PublicRoute>
+//                 <LoginPage />
+//             </PublicRoute>
+//         )
+//     },
+//     {
+//         path: "/register",
+//         element: (
+//             <PublicRoute>
+//                 <RegisterPage />
+//             </PublicRoute>
+//         )
+//     },
+//     {
+//         path: "*",
+//         element: <div>Not Found</div>
+//     }
+// ]);
 
 export default router

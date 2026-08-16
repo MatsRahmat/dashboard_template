@@ -72,24 +72,28 @@ const authSlice = createSlice({
             state.error = null;
         },
         loginSucces: (state, action: PayloadAction<AuthPayload>) => {
-            // console.log({payload:action.payload})
             state.loading = false;
             state.accessToken = action.payload?.token.access
             state.refreshToken = action.payload?.token.refresh
+            state.is_login = true;
         },
         loginFailure: (state, action: PayloadAction<string>) => {
             state.loading = false;
             state.error = action.payload;
         },
+        setLoading: (state, action: PayloadAction<boolean>) => {
+            state.loading = action.payload;
+        },
         logout: (state) => {
             state.accessToken = null;
             state.refreshToken = null;
             state.error = null;
+            state.is_login = false;
         }
     }
 });
 
-export const { loginStart, loginFailure, loginSucces, logout } = authSlice.actions
+export const { loginStart, loginFailure, loginSucces, logout, setLoading } = authSlice.actions
 export const { clearUser, setUser } = userSlice.actions
 
 export type CredentialType = {
@@ -113,6 +117,37 @@ export const loginAsync =
                 }
             }
         }
+
+export type RegisterCredential = {
+    username: string;
+    email: string;
+    password: string;
+    password_confirm: string;
+}
+
+export type RegisterReturn = {
+    status: boolean;
+    mesg: string;
+}
+
+export const registerAsync = (credential: RegisterCredential) => async (dispatch: AppDispatch): Promise<RegisterReturn> => {
+    try {
+        dispatch(setLoading(false));
+        const response = await axios.post("/auth/register", credential);
+        if (response.status == 201) {
+            return { status: true, mesg: "Success register" }
+        }
+        return { status: false, mesg: "Failed register" }
+    } catch (error) {
+        console.log(error)
+        if (error instanceof AxiosError) {
+            return { status: false, mesg: error.response?.data?.details };
+        }
+        return { status: false, mesg: String(error) };
+    } finally {
+        dispatch(setLoading(false));
+    }
+}
 
 export const userReducer = userSlice.reducer;
 export const authReducer = authSlice.reducer;

@@ -1,6 +1,5 @@
 import * as React from "react"
-import { Fragment } from "react"
-import Navbar from "../../components/navbar"
+import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux"
 import { loginAsync } from "./clients/reducer";
 import type { CredentialType } from "./clients/reducer"
@@ -44,8 +43,7 @@ export default function LoginPage() {
         }
     }
     return (
-        <Fragment>
-            <Navbar />
+        <React.Fragment>
             <section className="grid place-content-center" style={{ height: "calc(100dvh - 2rem)" }}>
                 <div className="border rounded-lg p-2 min-w-[20dvw]">
                     <form onSubmit={handleSubmit} className="" method="post">
@@ -67,8 +65,11 @@ export default function LoginPage() {
                             </div>
                             <span className="text-sm text-red-600">{errors["password"]}</span>
                         </div>
-                        <div className="mt-2 mb-4">
-                            <p>Don't have account? <a href="/register" className="text-blue-600 hover:underline underline-offset-2">Register here</a></p>
+                        <div className="mt-2 mb-4 flex gap-1">
+                            <p>Don't have account?</p>
+                            <Link to="/auth/register">
+                                <span className="text-blue-600 hover:underline underline-offset-2">Register here</span>
+                            </Link>
                         </div>
                         <div>
                             <button className="w-full bg-sky-500 hover:bg-sky-600 transition-colors rounded-lg py-2 cursor-pointer">
@@ -78,6 +79,6 @@ export default function LoginPage() {
                     </form>
                 </div>
             </section>
-        </Fragment>
+        </React.Fragment>
     )
 }
