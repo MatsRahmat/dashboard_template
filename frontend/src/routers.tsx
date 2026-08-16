@@ -6,6 +6,7 @@ import AppLayout from "./layouts/AppLayout";
 import PublicLayout from "./layouts/PublicLayout";
 import ProtectedLayout from "./layouts/ProtectedLayout";
 import Dashboard from "./pages/dasboard";
+import LogoutPage from "./pages/auth/logout";
 
 
 const router = createBrowserRouter([
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
                         element: <RegisterPage />
                     }
                 ]
+            },
+            {
+                path:"/logout",
+                element: <LogoutPage />
             },
             {
                 path: "*",

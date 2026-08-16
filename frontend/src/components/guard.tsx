@@ -15,7 +15,6 @@ function logGlobalState(globalState: RootState): void {
 
 function getAccessToken(globalState: RootState): boolean {
     const { auth } = globalState
-    console.log({auth})
     return auth.is_login;
 }
 
@@ -23,7 +22,7 @@ export function ProtectedRoute({ children }: { children: React.JSX.Element }) {
     const globalState = useSelector((state: RootState) => state);
     logGlobalState(globalState)
     if (!getAccessToken(globalState)) {
-        return <Navigate to={"/login"} replace />
+        return <Navigate to={"/auth/login"} replace />
     }
     return children;
 }
