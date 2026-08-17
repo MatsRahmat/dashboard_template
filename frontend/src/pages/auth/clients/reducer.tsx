@@ -3,8 +3,9 @@ import { AxiosError } from "axios";
 import axios from "../../../services/apiServices";
 import type { PayloadAction } from "@reduxjs/toolkit"
 import type { AppDispatch } from "../../../store";
+import { setGlobalLoading } from "../../../store/global_reducer";
 
-interface AuthState {
+export interface AuthState {
     accessToken: string | null;
     refreshToken: string | null;
     loading: boolean;
@@ -106,6 +107,7 @@ export const loginAsync =
         async (dispatch: AppDispatch) => {
             try {
                 dispatch(loginStart());
+                dispatch(setGlobalLoading(true))
                 const response = await axios.post("/auth/login", credential);
                 dispatch(loginSucces(response.data));
                 dispatch(setUser(response.data));
@@ -115,6 +117,8 @@ export const loginAsync =
                 } else {
                     dispatch(loginFailure(String(error)))
                 }
+            } finally {
+                dispatch(setGlobalLoading(false))
             }
         }
 
@@ -132,7 +136,7 @@ export type RegisterReturn = {
 
 export const registerAsync = (credential: RegisterCredential) => async (dispatch: AppDispatch): Promise<RegisterReturn> => {
     try {
-        dispatch(setLoading(false));
+        // dispatch(setLoading(false));
         const response = await axios.post("/auth/register", credential);
         if (response.status == 201) {
             return { status: true, mesg: "Success register" }
