@@ -1,6 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
 import AuthReducer, { userReducer } from "../pages/auth/clients/reducer"
-// import thunk from "redux-thunk";
 import { createPersistMiddleware, loadPersistedState } from "./middleware/persistMiddleware";
 import GlobalReducer from "./global_reducer"
 

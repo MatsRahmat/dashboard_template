@@ -3,6 +3,7 @@ import { useSelector } from "react-redux"
 import ViteSvg from "../../assets/vite.svg"
 import { ButtonAnchor } from "./element"
 import type { RootState } from "../../store"
+import { notification_dark, notification_white } from "../../assets/icons/index"
 
 export default function Navbar() {
     const { is_login } = useSelector((state: RootState) => state.auth);
@@ -18,11 +19,16 @@ export default function Navbar() {
             </React.Fragment>
         )
     }
-
     const AuthRightSide = () => {
         return (
             <React.Fragment>
                 <div className="flex items-center gap-2">
+                    <div>
+                        <button className="relative cursor-pointer transition-all hover:scale-[1.07]">
+                            <img src={notification_dark} alt="Notification" className="size-7" />
+                            <p className="bg-red-500 absolute top-0 left-0 size-3 rounded-full"></p>
+                        </button>
+                    </div>
                     <div>{username}</div>
                     <div className="border rounded-md hover:bg-sky-500 bg-sky-400 transition-all">
                         <ButtonAnchor link="logout" title="Logout" />

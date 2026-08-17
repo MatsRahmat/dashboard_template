@@ -6,6 +6,7 @@ import LoadingComponent from "../ui/loadingComponent"
 import { useDispatch, useSelector } from "react-redux"
 import { type AppDispatch, type RootState } from "../../store"
 import { setNotification } from "../../store/global_reducer"
+import Sidebar from "../ui/sidebar"
 
 export default function AppLayout() {
     const { is_loading, notif } = useSelector((state: RootState) => state.global);
@@ -21,9 +22,9 @@ export default function AppLayout() {
                 </div>
                 <div className="bg-cyan-500 flex-auto flex ">
                     <div className="flex-none transition-all bg-cyan-500 w-10 sm:w-32 md:w-44 xl:w-56">
-                        sidebar
+                        <Sidebar />
                     </div>
-                    <div className="flex-auto bg-slate-100 rounded-2xl border p-2">
+                    <div className="flex-auto bg-slate-100 rounded-bl-xl rounded-tl-xl border p-2">
                         <Outlet />
                     </div>
                 </div>
