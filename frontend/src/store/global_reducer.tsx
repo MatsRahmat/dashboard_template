@@ -28,7 +28,7 @@ const GlobalSlice = createSlice({
     initialState: initGlobalState,
     reducers: {
         setGlobalLoading: (state, action: PayloadAction<boolean>) => {
-            console.trace("global loading")
+            // console.trace("global loading")
             state.is_loading = action.payload
         },
         setNotification: (state, action: PayloadAction<NotificationInterface>) => {
@@ -49,14 +49,17 @@ export const sessionCheck = () => async (dispatch: AppDispatch): Promise<boolean
         }
     } catch (error) {
         valid = false
+        let errMesg = "";
         if (error instanceof AxiosError) {
             if (error.response?.status == axios_ori.HttpStatusCode.Unauthorized) {
                 dispatch(logout())
-                console.log(error)
+                errMesg = error.response.data?.detail
+                console.log(errMesg)
             }
         } else {
-            console.log(error)
+            console.log(String(error));
         }
+        //TODO: dispatch notif
     }
     return valid
 }

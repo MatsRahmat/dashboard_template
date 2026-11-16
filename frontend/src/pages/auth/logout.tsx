@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Navigate } from "react-router-dom";
-import logoutHooks from "../../hooks/logout";
+import logoutHooks from "../../hooks/useLogout";
 
 
 export default function LogoutPage() {

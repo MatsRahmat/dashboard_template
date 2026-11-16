@@ -1,4 +1,0 @@
-[2026-11-16 21:08:07,502][ERROR   ][error][views.py:85]> {'username': [ErrorDetail(string='A user with that username already exists.', code='unique')]}
-[2026-11-16 21:10:03,225][ERROR   ][post    ][error][views.py:85]> {'username': [ErrorDetail(string='A user with that username already exists.', code='unique')]}
-[2026-11-16 21:11:15,343][ERROR   ][post][error][views.py:85]> {'username': [ErrorDetail(string='A user with that username already exists.', code='unique')]}
-[2026-11-16 21:14:49,237][ERROR   ][post][error][views.py:85]> {'username': [ErrorDetail(string='A user with that username already exists.', code='unique')]}
