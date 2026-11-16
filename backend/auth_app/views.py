@@ -1,11 +1,14 @@
+import logging
 from django.shortcuts import render
 from django.contrib.auth.models import User, update_last_login
 
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 from rest_framework.parsers import JSONParser
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
+from rest_framework.request import Request
 from rest_framework.permissions import (
      IsAuthenticated
      ,IsAuthenticatedOrReadOnly
@@ -22,6 +25,9 @@ from auth_app.serializers import (
     ChangePasswordSerializer,
 )
 
+err_log = logging.getLogger("error")
+app_log = logging.getLogger("myapp")
+
 # Create your views here
 # ======================================================
 #                         [ Login ]
@@ -36,7 +42,7 @@ class AuthView(APIView):
             access = str(refresh.access_token)
             # token, created = Token.objects.get_or_create(user=user)
             update_last_login(None, user)
-            return Response({
+            response = Response({
                 "token": {
                     "access": access,
                     "refresh":str(refresh)
@@ -48,6 +54,16 @@ class AuthView(APIView):
                     "last_login": user.last_login,
                     }
             },status=status.HTTP_200_OK)
+            response.set_cookie(
+                key="access_token",
+                value=access,
+                httponly=True,
+                # samesite="Lax", # untuk same site
+                samesite="None", 
+                #TODO: ubah value dari env, karna di production harus true
+                secure=True,
+            )
+            return response
         return Response({
             "details": serializer.errors,
             },status=status.HTTP_400_BAD_REQUEST)
@@ -63,9 +79,11 @@ class RegisterView(APIView):
             user = serializer.save()
             return Response({
                 "id": user.id,
-                "username":user.username
+                "username":user.username,
+                "mesg": "Success create user"
                 }, status=status.HTTP_201_CREATED)
         
+        err_log.error(serializer.errors)
         return Response({
             "details": serializer.errors,
             }, status=status.HTTP_400_BAD_REQUEST)
@@ -154,3 +172,25 @@ class ChangePasswordView(APIView):
             }, status=status.HTTP_200_OK, content_type="application/json")
         return Response({"details": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
     
+# ======================================================
+#            [ Obtain Cookie for credential ]
+# ======================================================
+
+class ObtainCookieTokenView(APIView):
+    allowed_methods = ["get"]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        auth_header = request.headers.get("Authorization")
+        access = auth_header.split(" ")[1]
+        print("acess token: ", access)
+        response = Response("message:Success set access token pada cookie")
+        response.set_cookie(
+            key="access_token",
+            value=access,
+            httponly=True,
+            samesite="Lax",
+            #TODO: ubah value dari env, karna di production harus true
+            secure=False,
+        )
+        return response

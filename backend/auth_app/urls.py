@@ -6,6 +6,7 @@ from auth_app.views import (
     RefreshTokenView,
     UsernameCheckView,
     ChangePasswordView,
+    ObtainCookieTokenView,
 )
 
 urlpatterns = [
@@ -15,4 +16,5 @@ urlpatterns = [
     path('change-password', ChangePasswordView.as_view(), name='change-password'),
     path('token/refresh', RefreshTokenView.as_view(), name="refresh-token"),
     path('user/check', UsernameCheckView.as_view(), name="username-check"),
+    path('cookie-obtain-token', ObtainCookieTokenView.as_view(), name="cookie-obtain-token"),
 ]
